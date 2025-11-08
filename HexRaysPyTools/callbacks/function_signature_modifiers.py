@@ -1,4 +1,5 @@
 import idaapi
+import ida_typeinf
 from . import actions
 import HexRaysPyTools.core.const as const
 
@@ -19,13 +20,13 @@ class ConvertToUsercall(actions.HexRaysPopupAction):
             return
         function_details = idaapi.func_type_data_t()
         function_tinfo.get_func_details(function_details)
-        convention = idaapi.CM_CC_MASK & function_details.cc
+        convention = ida_typeinf.CM_CC_MASK & function_details.get_explicit_cc()
         if convention == idaapi.CM_CC_CDECL:
-            function_details.cc = idaapi.CM_CC_SPECIAL
+            function_details.set_cc(idaapi.CM_CC_SPECIAL)
         elif convention in (idaapi.CM_CC_STDCALL, idaapi.CM_CC_FASTCALL, idaapi.CM_CC_PASCAL, idaapi.CM_CC_THISCALL):
-            function_details.cc = idaapi.CM_CC_SPECIALP
+            function_details.set_cc(idaapi.CM_CC_SPECIALP)
         elif convention == idaapi.CM_CC_ELLIPSIS:
-            function_details.cc = idaapi.CM_CC_SPECIALE
+            function_details.set_cc(idaapi.CM_CC_SPECIALE)
         else:
             return
         function_tinfo.create_func(function_details)
