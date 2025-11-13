@@ -663,8 +663,10 @@ class TemporaryStructureModel(QtCore.QAbstractTableModel):
             return self.headers[section]
 
     def flags(self, index):
+        if not index.isValid():
+            return QtCore.Qt.ItemFlags()
         if index.column() in (2, 3):
-            return super(TemporaryStructureModel, self).flags(index) | QtWidgets.QAbstractItemView.DoubleClicked
+            return super(TemporaryStructureModel, self).flags(index)  | QtCore.Qt.ItemIsEditable
         return super(TemporaryStructureModel, self).flags(index)
 
     # HELPER METHODS #
